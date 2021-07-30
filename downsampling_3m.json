@@ -1,0 +1,26 @@
+{
+ "meta": {
+  "version": "1",
+  "type": "task",
+  "name": "downsampling_3m-Template",
+  "description": "template created from task: downsampling_3m"
+ },
+ "content": {
+  "data": {
+   "type": "task",
+   "attributes": {
+    "status": "active",
+    "name": "downsampling_3m",
+    "flux": "option task = {name: \"downsampling_3m\", every: 1h}\n\nfields = [\"p\", \"q\"]\ndata = from(bucket: \"inosatiot_resources_sim\")\n\t|> range(start: -1d)\n\t|> filter(fn: (r) =>\n\t\t(contains(value: r._field, set: fields)))\n\ndata\n\t|> aggregateWindow(fn: mean, every: 3m, createEmpty: false)\n\t|> tail(n: 100000000000, offset: 1)\n\t|> filter(fn: (r) =>\n\t\t(exists r._value))\n\t|> to(bucket: \"inosatiot_resources_sim_3m\", org: \"Inosat\")",
+    "every": "1h"
+   },
+   "relationships": {
+    "label": {
+     "data": []
+    }
+   }
+  },
+  "included": []
+ },
+ "labels": []
+}
